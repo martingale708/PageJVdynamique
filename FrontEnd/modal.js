@@ -32,7 +32,7 @@ function createWorkModal(work) {
   const span = document.createElement("span");
   const trash = document.createElement("i");
   trash.classList.add("fa-solid", "fa-trash-can");
-  trash.dataset.workId = work.id;
+  trash.id = work.id;
   // trash.id = work.id;
   img.src = work.imageUrl;
   img.alt = work.title;
@@ -48,20 +48,36 @@ function displayWorksModal() {
     works.forEach((work) => {
       createWorkModal(work);
     });
+    deleteWork();
   });
 }
 // ***************Ajout*******************
 /* affichage des works dans le dom */
 function displayWorksGallery() {
   myGallery.innerHTML = "";
-  getWorks().then((data) => {
-    //cree pour chaque élément du tableau
-    // console.log(data);
-    data.forEach((work) => {
-      createGallery(work);
+  const token = localStorage.getItem("token");
+  if (token) {
+    // Utilisateur connecté : mettre à jour la galerie normalement
+    getWorks().then((data) => {
+      data.forEach((work) => {
+        createGallery(work);
+      });
     });
-  });
+  } else {
+    // Utilisateur non connecté : ne rien faire, car la galerie doit rester vide
+    console.log("Vous devez être connecté pour afficher la galerie.");
+  }
 }
+// function displayWorksGallery() {
+//   myGallery.innerHTML = "";
+//   getWorks().then((data) => {
+//     //cree pour chaque élément du tableau
+//     // console.log(data);
+//     data.forEach((work) => {
+//       createGallery(work);
+//     });
+//   });
+// }
 
 // ***********Fin Ajout*********************
 //Fermuture de la modal quand on clique sur le croix
@@ -97,60 +113,134 @@ const deleteWorkID = {
   mode: "cors",
   credentials: "same-origin",
 };
-
-// Suppression au clic sur la poubelle et mise à jour modal et galerie principale
-function deleteWork() {
-  const trashs = document.querySelectorAll(".fa-trash-can");
-
-  trashs.forEach((trash) => {
-    trash.addEventListener("click", (e) => {
-      const workID = trash.dataset.workId;
-      // const workID = trash.id;
-      // Assurez-vous que deleteWorkID est correctement initialisée avant cette étape
-      fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Erreur lors de la suppression du travail avec ID ${workID}`);
-          }
-
-          // Appel de la fonction pour supprimer de la galerie principale
-          removeWorkFromGallery(workID);
-          console.log(workID);
-
-          // Mettez à jour la modal et la galerie principale
-          displayWorksModal();
-           displayWorksGallery(); // Vous pouvez activer ou désactiver cette ligne en fonction de vos besoins
-        })
-        .catch((error) => {
-          console.error("Erreur lors de la suppression du travail :", error);
-        });
-    });
-  });
-  function removeWorkFromGallery(workID) {
-    // Supprimer l'élément de la galerie principale par son ID
-    const galleryElement = document.querySelector(`#gallery figure img[src='${workID}']`);
-    if (galleryElement) {
-      galleryElement.parentElement.remove();
-    }
-  }
-
+// Supprimer de la galerie modale et principale
+function removeWorkFromModalAndGallery(workID) {
+  removeWorkFromModalGallery(workID);
+  removeWorkFromGallery(workID);
 }
-deleteWork();
+
+// Suppression au clic sur la poubelle dans la fenêtre modale
+trash.addEventListener("click", (e) => {
+  const workID = trash.id;
+  fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
+      .then((response) => {
+          if (!response.ok) {
+              throw new Error(`Erreur lors de la suppression du travail avec ID ${workID}`);
+          }
+          // Supprimer de la galerie modale et principale
+          removeWorkFromModalAndGallery(workID);
+          // Mettre à jour la galerie modale
+          displayWorksModal();
+      })
+      .catch((error) => {
+          console.error("Erreur lors de la suppression du travail :", error);
+      });
+});
+
+// Mettre à jour la galerie principale
+function displayWorksGallery() {
+  myGallery.innerHTML = "";
+  getWorks().then((data) => {
+      data.forEach((work) => {
+          createGallery(work);
+      });
+  });
+}
+
+// Appel initial pour afficher la galerie principale
+displayWorksGallery();
+// function deleteWork() {
+//   const trashs = document.querySelectorAll(".fa-trash-can");
+//   trashs.forEach((trash) => {
+//     trash.addEventListener("click", (e) => {
+//       const workID = trash.id;
+//       fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
+//         .then((response) => {
+//           if (!response.ok) {
+//             throw new Error(`Erreur lors de la suppression du travail avec ID ${workID}`);
+//           }
+//           // Supprimer de la galerie principale uniquement si la photo est trouvée
+//           removeWorkFromGallery(workID);
+//           // Mettre à jour la galerie principale
+//           displayWorksGallery();
+//           // Supprimer de la galerie modale uniquement si l'utilisateur est connecté
+//           const token = localStorage.getItem("token");
+//           if (token) {
+//             removeWorkFromModalGallery(workID);
+//             displayWorksModal();
+//           }
+//         })
+//         .catch((error) => {
+//           console.error("Erreur lors de la suppression du travail :", error);
+//         });
+//     });
+//   });
+
+//   function removeWorkFromGallery(workID) {
+//     // Supprimer l'élément de la galerie principale par son ID
+//     const galleryElement = document.querySelector(`.gallery figure img[src='${workID}']`);
+//     if (galleryElement) {
+//       galleryElement.parentElement.remove();
+//     }
+//   }
+
+//   function removeWorkFromModalGallery(workID) {
+//     // Supprimer l'élément de la galerie modale par son ID
+//     const modalGalleryElement = document.querySelector(`.modalGallery figure img[src='${workID}']`);
+//     if (modalGalleryElement) {
+//       modalGalleryElement.parentElement.remove();
+//     }
+//   }
+// }
+// Suppression au clic sur la poubelle et mise à jour modal et galerie principale
+// function deleteWork() {
+//   const trashs = document.querySelectorAll(".fa-solid");
+//   trashs.forEach((trash) => {
+//     trash.addEventListener("click", (e) => {
+//       // e.preventDefault();
+//       const workID = trash.id;
+//       // const workID = trash.id;
+//       // Assurez-vous que deleteWorkID est correctement initialisée avant cette étape
+//       fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
+//         .then((response) => {
+//           if (!response.ok) {
+//             throw new Error(`Erreur lors de la suppression du travail avec ID ${workID}`);
+//           }
+//           // Mettez à jour la modal et la galerie principale
+//           displayWorksModal();
+//           // Appel de la fonction pour supprimer de la galerie principale
+//           removeWorkFromGallery(workID);
+//           // Mettez à jour la modal et la galerie principale
+
+//           displayWorksGallery(); // Vous pouvez activer ou désactiver cette ligne en fonction de vos besoins
+//         })
+//         .catch((error) => {
+//           console.error("Erreur lors de la suppression du travail :", error);
+//         });
+//     });
+//   });
+//   function removeWorkFromGallery(workID) {
+//     // Supprimer l'élément de la galerie principale par son ID
+//     const galleryElement = document.querySelector(`.gallery figure img[src='${workID}']`);
+//     if (galleryElement) {
+//       galleryElement.parentElement.remove();
+//     }
+//   }
+// }
 function returnToModalPortfolio() {
   const arrowLeftModalWorks = document.querySelector(".modalAddWorks .fa-arrow-left");
   arrowLeftModalWorks.addEventListener("click", () => {
     //Supréssion de la prewiew a clik sur retour dans la modale
     inputFile.value = "";
     previewImage.style.display = "none";
-    console.log("coucou");
+    // console.log("coucou");
     modalPortfolio.style.display = "flex";
     modalAddWorks.style.display = "none";
   });
 }
 returnToModalPortfolio();
-//Function d'ajout d'un nouveau projet
 function addWorks() {
-  console.log("Adding works...");
+  // console.log("Adding works...");
   formAddWorks.addEventListener("submit", (e) => {
     e.preventDefault();
     // Récupération des Valeurs du Formulaire
@@ -176,12 +266,9 @@ function addWorks() {
           createGallery(data);
           addWorkToGallery(data);
         }
-        //  console.log("Fichier envoyé avec succès :", data);
-        // displayWorksModal();
-        displayWorksGallery();
-        createGallery(data);
-        addWorkToGallery(data); // Ajout dans la galerie principale
+        // Reset the form
         formAddWorks.reset();
+        // Hide modal and preview
         modalPortfolio.style.display = "flex";
         modalAddWorks.style.display = "none";
         previewImage.style.display = "none";
@@ -191,9 +278,52 @@ function addWorks() {
       });
   });
 }
+//Function d'ajout d'un nouveau projet
+// function addWorks() {
+//   console.log("Adding works...");
+//   formAddWorks.addEventListener("submit", (e) => {
+//     e.preventDefault();
+//     // Récupération des Valeurs du Formulaire
+//     const formData = new FormData(formAddWorks);
+//     fetch("http://localhost:5678/api/works", {
+//       method: "POST",
+//       body: formData,
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     })
+//       .then((response) => {
+//         if (!response.ok) {
+//           throw new Error("Erreur lors de l'envoi du fichier");
+//         }
+//         return response.json();
+//       })
+//       .then((data) => {
+//         // Vérifier si la photo n'est pas déjà présente dans la galerie principale
+//         const galleryElement = document.querySelector(`#gallery figure img[src='${data.imageUrl}']`);
+//         if (!galleryElement) {
+//           // Si elle n'est pas présente, ajoutez-la à la galerie principale
+//           createGallery(data);
+//           addWorkToGallery(data);
+//         }
+//         //  console.log("Fichier envoyé avec succès :", data);
+//         // displayWorksModal();
+//         displayWorksGallery();
+//         createGallery(data);
+//         addWorkToGallery(data); // Ajout dans la galerie principale
+//         formAddWorks.reset();
+//         modalPortfolio.style.display = "flex";
+//         modalAddWorks.style.display = "none";
+//         previewImage.style.display = "none";
+//       })
+//       .catch((error) => {
+//         console.error("Erreur :", error);
+//       });
+//   });
+// }
 addWorks();
 function addWorkToGallery(work) {
-  console.log("Adding work to gallery:", work);
+  // console.log("Adding work to gallery:", work);
   // Vérifie si l'élément existe déjà dans la galerie principale
   const existingElement = document.querySelector(`#gallery figure img[src='${work.imageUrl}']`);
 
@@ -253,28 +383,14 @@ function verifFormCompleted() {
   });
 }
 verifFormCompleted();
-// ********Fonction qui retourne à la premiere fenetre modale quand on clique sur Valider**********
-// Ajoutez un gestionnaire d'événements pour le bouton "Valider" dans la deuxième fenêtre modale
-// function handleValidFormButton() {
-//   console.log("Handling valid form button...");
-//   const buttonValidForm = document.querySelector(".container-button-add-work button");
-//   buttonValidForm.addEventListener("click", () => {
-//     e.preventDefault();
-//     // Réinitialisez la deuxième fenêtre modale
-//     formAddWorks.reset();
-//     previewImage.style.display = "none";
-//   });
-// }
-// // Appel de la fonction handleValidFormButton pour configurer le gestionnaire d'événements
-// handleValidFormButton();
-// Fonction qui ferme la deuxième fenêtre modale et affiche à nouveau la première fenêtre modale avec la galerie mise à jour
+
 function showFirstModal() {
   // Fermer la deuxième fenêtre modale
   modalAddWorks.style.display = "none";
-  
+
   // Afficher à nouveau la première fenêtre modale
   modalPortfolio.style.display = "flex";
-  
+
   // Mettre à jour la galerie dans la première fenêtre modale
   displayWorksModal();
 }

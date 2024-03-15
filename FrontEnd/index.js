@@ -93,15 +93,15 @@ async function getCategoryButtons() {
 async function filterCategory() {
   try {
     const works = await getWorks();
-    console.log("Gallerys:", works);
+    // console.log("Gallerys:", works);
 
     const buttons = document.querySelectorAll("#myFilterId button");
-    console.log("Buttons:", buttons);
+    // console.log("Buttons:", buttons);
 
     buttons.forEach((button) => {
       button.addEventListener("click", (e) => {
         const buttonId = e.target.id;
-        console.log("Button Clicked:", buttonId);
+        // console.log("Button Clicked:", buttonId);
         // Ajoute la classe "selected" au bouton actuellement cliqué
         e.target.classList.toggle("selected");
         // Supprime la classe "selected" des autres boutons
@@ -120,7 +120,7 @@ async function filterCategory() {
           const filterGallery = works.filter((work) => {
             return work.categoryId == buttonId;
           });
-          console.log("Filtered Works:", filterGallery);
+          // console.log("Filtered Works:", filterGallery);
 
           filterGallery.forEach((filteredWork) => {
             createGallery(filteredWork);
@@ -135,16 +135,16 @@ async function filterCategory() {
 
 // Utilisation de la fonction getCategoryButtons
 getCategoryButtons().then((newDiv) => {
-  console.log(newDiv);
+  // console.log(newDiv);
   filterCategory(); // Aoppelle la fonction filterCategory quand  newDiv est crée
 });
 document.addEventListener("DOMContentLoaded", async function () {
   await getCategoryButtons();
   //  getCategoryButtons();
   const loginStatus = document.querySelector(".users");
-  console.log(loginStatus);
+  // console.log(loginStatus);
   const logoutStatus = document.querySelector("#logout");
-  console.log(logoutStatus);
+  // console.log(logoutStatus);
   const newDiv = document.querySelector("#myFilterId");
   // **********CONNEXION*******************
   //l'utilisateur est connecté
@@ -170,25 +170,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     loginStatus.style.display = "block";
     logoutStatus.style.display = "none";
   }
-// });
+  // });
 
-// Pour se déconnecter
+  // Pour se déconnecter
 
-document.getElementById("logout").addEventListener("click", function (e) {
-  e.preventDefault();
-  // Supprimez les éléments du stockage local
-  localStorage.removeItem("userId");
-  localStorage.removeItem("token");
+  document.getElementById("logout").addEventListener("click", function (e) {
+    e.preventDefault();
+    // Supprimez les éléments du stockage local
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token");
 
-  // Masquez les éléments liés à la session connectée
-  document.querySelector(".admin-edit").style.display = "none";
-  document.querySelector("#portfolio .div-edit span").style.display = "none";
+    // Masquez les éléments liés à la session connectée
+    document.querySelector(".admin-edit").style.display = "none";
+    document.querySelector("#portfolio .div-edit span").style.display = "none";
 
-  // Affichez les éléments liés à la session déconnectée
-  // loginStatus.style.display = "block";
-  logoutStatus.style.display = "none";
+    // Affichez les éléments liés à la session déconnectée
+    // loginStatus.style.display = "block";
+    logoutStatus.style.display = "none";
 
-  // Redirigez l'utilisateur vers la page principale
-  window.location.href = "http://127.0.0.1:5500/Portfolio/FrontEnd/index.html"; 
-});
+    // Redirigez l'utilisateur vers la page principale
+    window.location.href = "http://127.0.0.1:5500/Portfolio/FrontEnd/index.html";
+  });
 });
