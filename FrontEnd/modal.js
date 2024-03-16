@@ -62,6 +62,7 @@ function displayWorksGallery() {
       data.forEach((work) => {
         createGallery(work);
       });
+      deleteWork();
     });
   } else {
     // Utilisateur non connecté : ne rien faire, car la galerie doit rester vide
