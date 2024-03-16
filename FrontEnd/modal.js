@@ -93,7 +93,6 @@ xmarkModal2.addEventListener("click", () => {
 const token = localStorage.getItem("token");
 // .***********************************************************************************
 //Supression des works grace a la méthode DELETE & au Token user depuis la poubelle de la modale
-git;
 const deleteWorkID = {
   method: "DELETE",
   headers: {
@@ -216,8 +215,10 @@ function addWorkToGallery(work) {
 }
 //Fonction qui génère les catégorie dynamiquement pour la modale (menue deroulante)
 async function displayCategoryModal() {
-  const select = document.querySelector("form select");
+  const select = document.querySelector("#formAddWorks select");
+  console.log(select);
   const categorys = await getCategories();
+  console.log(categorys);
   categorys.forEach((category) => {
     const option = document.createElement("option");
     option.value = category.id;
@@ -226,6 +227,7 @@ async function displayCategoryModal() {
   });
 }
 displayCategoryModal();
+
 //fonction prévisualisation de l'image
 function prevImg() {
   inputFile.addEventListener("change", () => {

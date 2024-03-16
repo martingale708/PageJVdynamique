@@ -47,6 +47,7 @@ async function createGallery(work) {
 async function getCategories() {
   const response = await fetch("http://localhost:5678/api/categories");
   return await response.json();
+  
 }
 
 // CREATION DES BOUTONS PAR CATEGORIES
