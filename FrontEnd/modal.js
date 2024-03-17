@@ -121,29 +121,20 @@ function deleteWork() {
   }
 }
 function displayWorksGallery() {
-  gallery.innerHTML = "";
-  getWorks().then((data) => {
-    //cree pour chaque élément du tableau
-    // console.log(data);
-    data.forEach((work) => {
-      createWork(work);
-    });
-  });
-}
-// function displayWorksGallery() {
-//   myGallery.innerHTML = "";
-//   const token = localStorage.getItem("token");
+  // myGallery.innerHTML = "";
+  const token = localStorage.getItem("token");
 
-//   if (token) {
-//     getWorks().then((data) => {
-//       data.forEach((work) => {
-//         createGallery(work);
-//       });
-//     });
-//   } else {
-//     console.log("Vous devez être connecté pour afficher la galerie.");
-//   }
-// }
+  if (token) {
+    myGallery.innerHTML = "";
+    getWorks().then((data) => {
+      data.forEach((work) => {
+        createGallery(work);
+      });
+    });
+  } else {
+    console.log("Vous devez être connecté pour afficher la galerie.");
+  }
+}
 // Appel des fonctions après le chargement du DOM
 document.addEventListener("DOMContentLoaded", () => {
   displayWorksGallery();
