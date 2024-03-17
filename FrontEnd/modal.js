@@ -110,7 +110,11 @@ function deleteWork() {
       trash.addEventListener("click", (e) => {
         const workID = trash.id;
         fetch(`http://localhost:5678/api/works/${workID}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
         }).then(() => {
           displayWorksModal();
           displayWorksGallery();
@@ -121,6 +125,26 @@ function deleteWork() {
     });
   }
 }
+// function deleteWork() {
+//   const trashs = document.querySelectorAll(".fa-trash-can");
+//   const token = localStorage.getItem("token");
+  
+//   if (token) {
+//     trashs.forEach(trash => {
+//       trash.addEventListener("click", (e) => {
+//         const workID = trash.id;
+//         fetch(`http://localhost:5678/api/works/${workID}`, {
+//           method: 'DELETE'
+//         }).then(() => {
+//           displayWorksModal();
+//           displayWorksGallery();
+//         }).catch(error => {
+//           console.error("Erreur lors de la suppression du travail :", error);
+//         });
+//       });
+//     });
+//   }
+// }
 
 function displayWorksGallery() {
   myGallery.innerHTML = "";
@@ -130,7 +154,7 @@ function displayWorksGallery() {
     getWorks().then((data) => {
       data.forEach((work) => {
         createGallery(work);
-      }
+      })
     });
   } else {
     console.log("Vous devez être connecté pour afficher la galerie.");
