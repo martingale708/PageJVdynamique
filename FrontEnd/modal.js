@@ -90,7 +90,6 @@ xmarkModal2.addEventListener("click", () => {
   modalContent.style.display = "none";
 });
 const token = localStorage.getItem("token");
-// .***********************************************************************************
 //Supression des works grace a la méthode DELETE & au Token user depuis la poubelle de la modale
 const deleteWorkID = {
   method: "DELETE",
@@ -104,62 +103,47 @@ const deleteWorkID = {
 function deleteWork() {
   const trashs = document.querySelectorAll(".fa-trash-can");
   const token = localStorage.getItem("token");
-  
+
   if (token) {
-    trashs.forEach(trash => {
+    trashs.forEach((trash) => {
       trash.addEventListener("click", (e) => {
         const workID = trash.id;
-        fetch(`http://localhost:5678/api/works/${workID}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        }).then(() => {
-          displayWorksModal();
-          displayWorksGallery();
-        }).catch(error => {
-          console.error("Erreur lors de la suppression du travail :", error);
-        });
+        fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
+          .then(() => {
+            displayWorksModal();
+            displayWorksGallery();
+          })
+          .catch((error) => {
+            console.error("Erreur lors de la suppression du travail :", error);
+          });
       });
     });
   }
 }
-// function deleteWork() {
-//   const trashs = document.querySelectorAll(".fa-trash-can");
+function displayWorksGallery() {
+  gallery.innerHTML = "";
+  getWorks().then((data) => {
+    //cree pour chaque élément du tableau
+    // console.log(data);
+    data.forEach((work) => {
+      createWork(work);
+    });
+  });
+}
+// function displayWorksGallery() {
+//   myGallery.innerHTML = "";
 //   const token = localStorage.getItem("token");
-  
+
 //   if (token) {
-//     trashs.forEach(trash => {
-//       trash.addEventListener("click", (e) => {
-//         const workID = trash.id;
-//         fetch(`http://localhost:5678/api/works/${workID}`, {
-//           method: 'DELETE'
-//         }).then(() => {
-//           displayWorksModal();
-//           displayWorksGallery();
-//         }).catch(error => {
-//           console.error("Erreur lors de la suppression du travail :", error);
-//         });
+//     getWorks().then((data) => {
+//       data.forEach((work) => {
+//         createGallery(work);
 //       });
 //     });
+//   } else {
+//     console.log("Vous devez être connecté pour afficher la galerie.");
 //   }
 // }
-
-function displayWorksGallery() {
-  myGallery.innerHTML = "";
-  const token = localStorage.getItem("token");
-  
-  if (token) {
-    getWorks().then((data) => {
-      data.forEach((work) => {
-        createGallery(work);
-      })
-    });
-  } else {
-    console.log("Vous devez être connecté pour afficher la galerie.");
-  }
-}
 // Appel des fonctions après le chargement du DOM
 document.addEventListener("DOMContentLoaded", () => {
   displayWorksGallery();
@@ -280,7 +264,11 @@ function showFirstModal() {
   modalPortfolio.style.display = "flex";
 
   // Mettre à jour la galerie dans la première fenêtre modale
-  displayWorksModal();
+  // Mettre à jour la galerie dans la première fenêtre modale
+  if (localStorage.getItem("token")) {
+    displayWorksGallery();
+  }
+  // displayWorksModal();
 }
 
 // Ajout d'un gestionnaire d'événements pour le bouton de soumission du formulaire d'ajout de photo
