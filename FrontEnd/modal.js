@@ -51,7 +51,6 @@ function displayWorksModal() {
     deleteWork();
   });
 }
-// ***************Ajout*******************
 /* affichage des works dans le dom */
 function displayWorksGallery() {
   myGallery.innerHTML = "";
@@ -69,7 +68,6 @@ function displayWorksGallery() {
     console.log("Vous devez être connecté pour afficher la galerie.");
   }
 }
-// ***********Fin Ajout*********************
 //Fermuture de la modal quand on clique sur le croix
 const xmarkModal = document.querySelector(".modalPortfolio span .fa-xmark");
 xmarkModal.addEventListener("click", () => {
@@ -105,59 +103,45 @@ const deleteWorkID = {
 };
 function deleteWork() {
   const trashs = document.querySelectorAll(".fa-trash-can");
-  trashs.forEach((trash) => {
-    trash.addEventListener("click", (e) => {
-      const workID = trash.id;
-      fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Erreur lors de la suppression du travail avec ID ${workID}`);
-          }
-          // Supprimer de la galerie principale uniquement si la photo est trouvée
-          removeWorkFromGallery(workID);
-          // Mettre à jour la galerie principale
+  const token = localStorage.getItem("token");
+  
+  if (token) {
+    trashs.forEach(trash => {
+      trash.addEventListener("click", (e) => {
+        const workID = trash.id;
+        fetch(`http://localhost:5678/api/works/${workID}`, {
+          method: 'DELETE'
+        }).then(() => {
+          displayWorksModal();
           displayWorksGallery();
-          // Supprimer de la galerie modale uniquement si l'utilisateur est connecté
-          const token = localStorage.getItem("token");
-          if (token) {
-            removeWorkFromModalGallery(workID);
-            displayWorksModal();
-          }
-        })
-        .catch((error) => {
+        }).catch(error => {
           console.error("Erreur lors de la suppression du travail :", error);
         });
+      });
     });
-  });
-
-  function removeWorkFromGallery(workID) {
-    // Supprimer l'élément de la galerie principale par son ID
-    const galleryElement = document.querySelector(`.gallery figure img[src='${workID}']`);
-    if (galleryElement) {
-      galleryElement.parentElement.remove();
-    }
-  }
-
-  function removeWorkFromModalGallery(workID) {
-    // Supprimer l'élément de la galerie modale par son ID
-    const modalGalleryElement = document.querySelector(`.modalGallery figure img[src='${workID}']`);
-    if (modalGalleryElement) {
-      modalGalleryElement.parentElement.remove();
-    }
   }
 }
-function returnToModalPortfolio() {
-  const arrowLeftModalWorks = document.querySelector(".modalAddWorks .fa-arrow-left");
-  arrowLeftModalWorks.addEventListener("click", () => {
-    //Supréssion de la prewiew a clik sur retour dans la modale
-    inputFile.value = "";
-    previewImage.style.display = "none";
-    // console.log("coucou");
-    modalPortfolio.style.display = "flex";
-    modalAddWorks.style.display = "none";
-  });
+
+function displayWorksGallery() {
+  myGallery.innerHTML = "";
+  const token = localStorage.getItem("token");
+  
+  if (token) {
+    getWorks().then((data) => {
+      data.forEach((work) => {
+        createGallery(work);
+      }
+    });
+  } else {
+    console.log("Vous devez être connecté pour afficher la galerie.");
+  }
 }
-returnToModalPortfolio();
+// Appel des fonctions après le chargement du DOM
+document.addEventListener("DOMContentLoaded", () => {
+  displayWorksGallery();
+  displayWorksModal();
+  deleteWork();
+});
 function addWorks() {
   // console.log("Adding works...");
   formAddWorks.addEventListener("submit", (e) => {
