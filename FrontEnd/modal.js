@@ -13,6 +13,7 @@ const inputTitle = document.querySelector("#title");
 const inputCategory = document.querySelector("#categoryInput");
 const inputFile = document.querySelector("#file");
 const previewImage = document.getElementById("previewImage");
+
 // Fonction pour sélectionner l'élément dynamique
 function selectDynamicElement() {
   const buttonModal = document.querySelector("#portfolio .div-edit span");
@@ -67,7 +68,14 @@ function displayWorksGallery() {
     // Utilisateur non connecté : ne rien faire, car la galerie doit rester vide
     console.log("Vous devez être connecté pour afficher la galerie.");
   }
+  
 }
+//Fermeture de la fenetre ùodale quand on clique en dehors
+document.addEventListener("click",(e)=>{
+ if(e.target == modalContent){
+  modalContent.style.display ="none"
+ }
+})
 //Fermuture de la modal quand on clique sur le croix
 const xmarkModal = document.querySelector(".modalPortfolio span .fa-xmark");
 xmarkModal.addEventListener("click", () => {
@@ -81,6 +89,7 @@ function displayModalAddWorks() {
     modalAddWorks.style.display = "flex";
   });
 }
+
 //Fermuture de la modal sur la croix 2
 const xmarkModal2 = document.querySelector(".modalAddWorks span .fa-xmark");
 xmarkModal2.addEventListener("click", () => {
@@ -89,6 +98,19 @@ xmarkModal2.addEventListener("click", () => {
   previewImage.style.display = "none";
   modalContent.style.display = "none";
 });
+// retour sur la 1ere fenetre modal quand on clique sur la flèche 
+const arrowLeft = document.querySelector(".fa-arrow-left");
+console.log(arrowLeft);
+arrowLeft.addEventListener("click", (e)=>{
+   //Supréssion de la prewiew a clik sur retour dans la modale
+   inputFile.value = "";
+   previewImage.style.display = "none";
+   console.log("coucou");
+   modalPortfolio.style.display = "flex";
+   modalAddWorks.style.display = "none";
+})
+
+
 const token = localStorage.getItem("token");
 //Supression des works grace a la méthode DELETE & au Token user depuis la poubelle de la modale
 const deleteWorkID = {

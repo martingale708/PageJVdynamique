@@ -42,7 +42,6 @@ async function createGallery(work) {
   figure.appendChild(figcaption);
   myGallery.appendChild(figure);
 }
-
 // RECUPERATION DES CATEGORIES
 async function getCategories() {
   const response = await fetch("http://localhost:5678/api/categories");
