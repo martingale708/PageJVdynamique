@@ -101,15 +101,6 @@ function displayModalAddWorks() {
   });
 }
 
-// //Fermuture de la modal sur la croix 2
-// const xmarkModal2 = document.querySelector(".modalAddWorks span .fa-xmark");
-// xmarkModal2.addEventListener("click", () => {
-//   //Supréssion de la prewiew a clik sur retour dans la modale
-//   inputFile.value = "";
-//   previewImage.style.display = "none";
-//   modalContent.style.display = "none";
-// });
-// retour sur la 1ere fenetre modal quand on clique sur la flèche 
 const arrowLeft = document.querySelector(".fa-arrow-left");
 console.log(arrowLeft);
 arrowLeft.addEventListener("click", (e)=>{
