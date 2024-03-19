@@ -114,7 +114,7 @@ arrowLeft.addEventListener("click", (e)=>{
 
 
 const token = localStorage.getItem("token");
-//Supression des works grace a la méthode DELETE & au Token user depuis la poubelle de la modale
+//SUPPRESSION D'UNE IMAGE (WORK) PAR LA METHODE DELETE & TOKEN
 const deleteWorkID = {
   method: "DELETE",
   headers: {
@@ -145,7 +145,6 @@ function deleteWork() {
   }
 }
 function displayWorksGallery() {
-  // myGallery.innerHTML = "";
   const token = localStorage.getItem("token");
 
   if (token) {
@@ -165,8 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
   displayWorksModal();
   deleteWork();
 });
+//AJOUT D'UNE IMAGE DANS la PREMIERE FENETRE MODAL VIA LE SERVEUR PAR LA METHODE POST
 function addWorks() {
-  // console.log("Adding works...");
   formAddWorks.addEventListener("submit", (e) => {
     e.preventDefault();
     // Récupération des Valeurs du Formulaire
@@ -192,7 +191,7 @@ function addWorks() {
           createGallery(data);
           addWorkToGallery(data);
         }
-        // Reset the form
+        // REINITIALISATION DES CHAMPS DU
         formAddWorks.reset();
         // Hide modal and preview
         modalPortfolio.style.display = "flex";
@@ -206,10 +205,10 @@ function addWorks() {
 }
 
 addWorks();
+//AJOUT DE L'IMAGE DANS LA GALERIE PRINCIPALE
 function addWorkToGallery(work) {
-  // console.log("Adding work to gallery:", work);
   // Vérifie si l'élément existe déjà dans la galerie principale
-  const existingElement = document.querySelector(`#gallery figure img[src='${work.imageUrl}']`);
+  const existingElement = document.querySelector(`.gallery figure img[src='${work.imageUrl}']`);
 
   if (!existingElement) {
     // Créer et ajouter la nouvelle œuvre à la galerie principale
@@ -218,7 +217,7 @@ function addWorkToGallery(work) {
     img.src = work.imageUrl;
     img.alt = work.title;
     figure.appendChild(img);
-    document.getElementById("gallery").appendChild(figure);
+    document.querySelector(".gallery").appendChild(figure);
   }
 }
 //Fonction qui génère les catégorie dynamiquement pour la modale (menue deroulante)
@@ -277,8 +276,6 @@ function showFirstModal() {
 
   // Afficher à nouveau la première fenêtre modale
   modalPortfolio.style.display = "flex";
-
-  // Mettre à jour la galerie dans la première fenêtre modale
   // Mettre à jour la galerie dans la première fenêtre modale
   if (localStorage.getItem("token")) {
     displayWorksGallery();
