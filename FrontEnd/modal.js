@@ -70,26 +70,19 @@ function displayWorksGallery() {
   }
   
 }
+// FONCTION QUI REGROUPE LA FERMETURE DE LA FENETRE MODAL
+function closeModal(){
 //Fermeture de la fenetre ùodale quand on clique en dehors
 document.addEventListener("click",(e)=>{
  if(e.target == modalContent){
   modalContent.style.display ="none"
  }
 })
-//Fermuture de la modal quand on clique sur le croix
+//Fermuture de la modal quand on clique sur le croix 1
 const xmarkModal = document.querySelector(".modalPortfolio span .fa-xmark");
 xmarkModal.addEventListener("click", () => {
   modalContent.style.display = "none";
 });
-
-//fonction d'affichage au click sur btn:"ajouter-photo" de la modalAddWorks(2eme fenetre modal)
-function displayModalAddWorks() {
-  buttonAddPhoto.addEventListener("click", () => {
-    modalPortfolio.style.display = "none";
-    modalAddWorks.style.display = "flex";
-  });
-}
-
 //Fermuture de la modal sur la croix 2
 const xmarkModal2 = document.querySelector(".modalAddWorks span .fa-xmark");
 xmarkModal2.addEventListener("click", () => {
@@ -98,6 +91,24 @@ xmarkModal2.addEventListener("click", () => {
   previewImage.style.display = "none";
   modalContent.style.display = "none";
 });
+}
+closeModal()
+//fonction d'affichage au click sur btn:"ajouter-photo" de la modalAddWorks
+function displayModalAddWorks() {
+  buttonAddPhoto.addEventListener("click", () => {
+    modalPortfolio.style.display = "none";
+    modalAddWorks.style.display = "flex";
+  });
+}
+
+// //Fermuture de la modal sur la croix 2
+// const xmarkModal2 = document.querySelector(".modalAddWorks span .fa-xmark");
+// xmarkModal2.addEventListener("click", () => {
+//   //Supréssion de la prewiew a clik sur retour dans la modale
+//   inputFile.value = "";
+//   previewImage.style.display = "none";
+//   modalContent.style.display = "none";
+// });
 // retour sur la 1ere fenetre modal quand on clique sur la flèche 
 const arrowLeft = document.querySelector(".fa-arrow-left");
 console.log(arrowLeft);
