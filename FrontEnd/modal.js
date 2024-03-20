@@ -131,6 +131,7 @@ function deleteWork() {
   if (token) {
     trashs.forEach((trash) => {
       trash.addEventListener("click", (e) => {
+        e.stopPropagation();
         const workID = trash.id;
         fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
           .then(() => {
@@ -223,9 +224,9 @@ function addWorkToGallery(work) {
 //Fonction qui génère les catégorie dynamiquement pour la modale (menue deroulante)
 async function displayCategoryModal() {
   const select = document.querySelector("#formAddWorks select");
-  console.log(select);
+  // console.log(select);
   const categorys = await getCategories();
-  console.log(categorys);
+  // console.log(categorys);
   categorys.forEach((category) => {
     const option = document.createElement("option");
     option.value = category.id;
@@ -280,7 +281,6 @@ function showFirstModal() {
   if (localStorage.getItem("token")) {
     displayWorksGallery();
   }
-  // displayWorksModal();
 }
 
 // Ajout d'un gestionnaire d'événements pour le bouton de soumission du formulaire d'ajout de photo
@@ -288,6 +288,6 @@ formAddWorks.addEventListener("submit", (e) => {
   e.preventDefault();
   // Traitement pour ajouter la photo ici
   addWorks();
-  // Après avoir ajouté avec succès la photo, afficher à nouveau la première fenêtre modale avec la galerie mise à jour
+  // Affichage de la premiere fenetre modale
   showFirstModal();
 });

@@ -28,7 +28,7 @@ function clearGallery() {
 }
 
 getGallery();
-
+//CREATION DE LA GALLERIE
 async function createGallery(work) {
   const figure = document.createElement("figure");
   // creation de la balise image
@@ -81,8 +81,6 @@ async function getCategoryButtons() {
         newDiv.appendChild(button);
       });
     }
-
-    // Returning the newDiv
     return newDiv;
   } catch (error) {
     console.error("Error:", error);
@@ -170,7 +168,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     loginStatus.style.display = "block";
     logoutStatus.style.display = "none";
   }
-  // });
 
   // Pour se déconnecter
 
@@ -183,12 +180,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Masquez les éléments liés à la session connectée
     document.querySelector(".admin-edit").style.display = "none";
     document.querySelector("#portfolio .div-edit span").style.display = "none";
-
     // Affichez les éléments liés à la session déconnectée
-    // loginStatus.style.display = "block";
     logoutStatus.style.display = "none";
 
     // Redirigez l'utilisateur vers la page principale
-    window.location.href = "http://127.0.0.1:5500/Portfolio/FrontEnd/index.html";
+    location.href = "index.html";
   });
 });
