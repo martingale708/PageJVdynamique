@@ -192,11 +192,11 @@ function addWorks() {
           createGallery(data);
           addWorkToGallery(data);
         }
-        // REINITIALISATION DES CHAMPS DU
+        // REINITIALISATION DES CHAMPS DU FORMULAIRE
         formAddWorks.reset();
         // Hide modal and preview
         modalPortfolio.style.display = "flex";
-        modalAddWorks.style.display = "none";
+         modalAddWorks.style.display = "none";
         previewImage.style.display = "none";
       })
       .catch((error) => {
@@ -206,6 +206,7 @@ function addWorks() {
 }
 
 addWorks();
+prevImg();
 //AJOUT DE L'IMAGE DANS LA GALERIE PRINCIPALE
 function addWorkToGallery(work) {
   // Vérifie si l'élément existe déjà dans la galerie principale
@@ -246,8 +247,8 @@ function prevImg() {
       reader.onload = function (e) {
         previewImage.src = e.target.result;
         previewImage.style.display = "block";
-        labelFile.style.display = "none";
-        paragraphFile.style.display = "none";
+         labelFile.style.display = "none";
+         paragraphFile.style.display = "none";
       };
       reader.readAsDataURL(file);
     } else {
@@ -255,7 +256,7 @@ function prevImg() {
     }
   });
 }
-prevImg();
+
 // fontion qui vérifie si tout les inputs sont remplis
 function verifFormCompleted() {
   const buttonValidForm = document.querySelector(".container-button-add-work  button");
