@@ -162,9 +162,7 @@ function displayWorksGallery() {
 // Appel des fonctions après le chargement du DOM
 document.addEventListener("DOMContentLoaded", () => {
   displayWorksGallery();
-  displayWorksModal();
-  deleteWork();
-});
+  });
 //AJOUT D'UNE IMAGE DANS la PREMIERE FENETRE MODAL VIA LE SERVEUR PAR LA METHODE POST
 function addWorks() {
   formAddWorks.addEventListener("submit", (e) => {
