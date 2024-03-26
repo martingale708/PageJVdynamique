@@ -185,5 +185,5 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Redirigez l'utilisateur vers la page principale
     location.href = "index.html";
-  });
+  })
 });

@@ -13,7 +13,14 @@ const inputTitle = document.querySelector("#title");
 const inputCategory = document.querySelector("#categoryInput");
 const inputFile = document.querySelector("#file");
 const previewImage = document.getElementById("previewImage");
-
+// Appel des fonctions après le chargement du DOM
+document.addEventListener("DOMContentLoaded", () => {
+  displayWorksGallery();
+  closeModal();
+  selectDynamicElement();
+  addWorks();
+  displayModalAddWorks();
+});
 // Fonction pour sélectionner l'élément dynamique
 function selectDynamicElement() {
   const buttonModal = document.querySelector("#portfolio .div-edit span");
@@ -34,7 +41,6 @@ function createWorkModal(work) {
   const trash = document.createElement("i");
   trash.classList.add("fa-solid", "fa-trash-can");
   trash.id = work.id;
-  // trash.id = work.id;
   img.src = work.imageUrl;
   img.alt = work.title;
   span.appendChild(trash);
@@ -43,6 +49,7 @@ function createWorkModal(work) {
   modalGallery.appendChild(figure);
 }
 function displayWorksModal() {
+  console.log("affichage de la galerie modal en cours");
   modalGallery.innerHTML = "";
   getWorks().then((works) => {
     // console.log(works);
@@ -52,121 +59,24 @@ function displayWorksModal() {
     deleteWork();
   });
 }
-/* affichage des works dans le dom */
-function displayWorksGallery() {
-  myGallery.innerHTML = "";
-  const token = localStorage.getItem("token");
-  if (token) {
-    // Utilisateur connecté : mettre à jour la galerie normalement
-    getWorks().then((data) => {
-      data.forEach((work) => {
-        createGallery(work);
-      });
-      deleteWork();
-    });
-  } else {
-    // Utilisateur non connecté : ne rien faire, car la galerie doit rester vide
-    console.log("Vous devez être connecté pour afficher la galerie.");
-  }
-  
-}
-// FONCTION QUI REGROUPE LA FERMETURE DE LA FENETRE MODAL
-function closeModal(){
-//Fermeture de la fenetre ùodale quand on clique en dehors
-document.addEventListener("click",(e)=>{
- if(e.target == modalContent){
-  modalContent.style.display ="none"
- }
-})
-//Fermuture de la modal quand on clique sur le croix 1
-const xmarkModal = document.querySelector(".modalPortfolio span .fa-xmark");
-xmarkModal.addEventListener("click", () => {
-  modalContent.style.display = "none";
-});
-//Fermuture de la modal sur la croix 2
-const xmarkModal2 = document.querySelector(".modalAddWorks span .fa-xmark");
-xmarkModal2.addEventListener("click", () => {
-  //Supréssion de la prewiew a clik sur retour dans la modale
-  inputFile.value = "";
-  previewImage.style.display = "none";
-  modalContent.style.display = "none";
-});
-}
-closeModal()
-//fonction d'affichage au click sur btn:"ajouter-photo" de la modalAddWorks
-function displayModalAddWorks() {
-  buttonAddPhoto.addEventListener("click", () => {
-    modalPortfolio.style.display = "none";
-    modalAddWorks.style.display = "flex";
-  });
-}
-
-const arrowLeft = document.querySelector(".fa-arrow-left");
-console.log(arrowLeft);
-arrowLeft.addEventListener("click", (e)=>{
-   //Supréssion de la prewiew a clik sur retour dans la modale
-   inputFile.value = "";
-   previewImage.style.display = "none";
-   console.log("coucou");
-   modalPortfolio.style.display = "flex";
-   modalAddWorks.style.display = "none";
-})
-
-
-const token = localStorage.getItem("token");
-//SUPPRESSION D'UNE IMAGE (WORK) PAR LA METHODE DELETE & TOKEN
-const deleteWorkID = {
-  method: "DELETE",
-  headers: {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  },
-  mode: "cors",
-  credentials: "same-origin",
-};
-function deleteWork() {
-  const trashs = document.querySelectorAll(".fa-trash-can");
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    trashs.forEach((trash) => {
-      trash.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const workID = trash.id;
-        fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
-          .then(() => {
-            displayWorksModal();
-            displayWorksGallery();
-          })
-          .catch((error) => {
-            console.error("Erreur lors de la suppression du travail :", error);
-          });
-      });
-    });
-  }
-}
 function displayWorksGallery() {
   const token = localStorage.getItem("token");
 
   if (token) {
-    myGallery.innerHTML = "";
+   myGallery.innerHTML = "";
     getWorks().then((data) => {
-      data.forEach((work) => {
+     data.forEach((work) => {
         createGallery(work);
-      });
-    });
+     });
+   });
   } else {
-    console.log("Vous devez être connecté pour afficher la galerie.");
+   console.log("Vous devez être connecté pour afficher la galerie.");
   }
 }
-// Appel des fonctions après le chargement du DOM
-document.addEventListener("DOMContentLoaded", () => {
-  displayWorksGallery();
-  });
-//AJOUT D'UNE IMAGE DANS la PREMIERE FENETRE MODAL VIA LE SERVEUR PAR LA METHODE POST
-function addWorks() {
+ function addWorks() {
   formAddWorks.addEventListener("submit", (e) => {
-    e.preventDefault();
+    //  e.preventDefault();
+    console.log("formulaire soumis");
     // Récupération des Valeurs du Formulaire
     const formData = new FormData(formAddWorks);
     fetch("http://localhost:5678/api/works", {
@@ -187,16 +97,15 @@ function addWorks() {
         const galleryElement = document.querySelector(`#gallery figure img[src='${data.imageUrl}']`);
         if (!galleryElement) {
           // Si elle n'est pas présente, ajoutez-la à la galerie principale
-          createGallery(data);
-          addWorkToGallery(data);
+          displayWorksGallery();
+          modalPortfolio.style.display = "flex";
         }
         // REINITIALISATION DES CHAMPS DU FORMULAIRE
         formAddWorks.reset();
-        // Hide modal and preview
-        modalPortfolio.style.display = "flex";
          modalAddWorks.style.display = "none";
         previewImage.style.display = "none";
       })
+      console.log("oeuvre ajoutée avec")
       .catch((error) => {
         console.error("Erreur :", error);
       });
@@ -204,22 +113,83 @@ function addWorks() {
 }
 
 addWorks();
-prevImg();
-//AJOUT DE L'IMAGE DANS LA GALERIE PRINCIPALE
-function addWorkToGallery(work) {
-  // Vérifie si l'élément existe déjà dans la galerie principale
-  const existingElement = document.querySelector(`.gallery figure img[src='${work.imageUrl}']`);
+// FONCTION QUI REGROUPE LA FERMETURE DE LA FENETRE MODAL
+function closeModal(){
+  //Fermeture de la fenetre ùodale quand on clique en dehors
+  document.addEventListener("click",(e)=>{
+   if(e.target == modalContent){
+    modalContent.style.display ="none"
+   }
+  })
+  //Fermuture de la modal quand on clique sur le croix 1
+  const xmarkModal = document.querySelector(".modalPortfolio span .fa-xmark");
+  xmarkModal.addEventListener("click", () => {
+    modalPortfolio.style.display = "none";
+  });
+  //Fermuture de la modal sur la croix 2
+  const xmarkModal2 = document.querySelector(".modalAddWorks span .fa-xmark");
+  xmarkModal2.addEventListener("click", () => {
+    //Supréssion de la prewiew a clik sur retour dans la modale
+    inputFile.value = "";
+    previewImage.style.display = "none";
+    modalAddWorks.style.display = "none";
+  });
+  }
+  // closeModal()
+  //fonction d'affichage au click sur btn:"ajouter-photo" de la modalAddWorks
+  function displayModalAddWorks() {
+    buttonAddPhoto.addEventListener("click", () => {
+      modalPortfolio.style.display = "none";
+      modalAddWorks.style.display = "flex";
+    });
+  }
 
-  if (!existingElement) {
-    // Créer et ajouter la nouvelle œuvre à la galerie principale
-    const figure = document.createElement("figure");
-    const img = document.createElement("img");
-    img.src = work.imageUrl;
-    img.alt = work.title;
-    figure.appendChild(img);
-    document.querySelector(".gallery").appendChild(figure);
+  const arrowLeft = document.querySelector(".fa-arrow-left");
+  console.log(arrowLeft);
+  arrowLeft.addEventListener("click", (e)=>{
+     //Supréssion de la prewiew a clik sur retour dans la modale
+     inputFile.value = "";
+     previewImage.style.display = "none";
+     console.log("coucou");
+     modalPortfolio.style.display = "flex";
+     modalAddWorks.style.display = "none";
+  })
+
+
+const token = localStorage.getItem("token");
+//SUPPRESSION D'UNE IMAGE (WORK) PAR LA METHODE DELETE & TOKEN
+const deleteWorkID = {
+  method: "DELETE",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  },
+  mode: "cors",
+  credentials: "same-origin",
+};
+function deleteWork() {
+  const trashs = document.querySelectorAll(".fa-trash-can");
+  console.log("trash");
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    trashs.forEach((trash) => {
+      trash.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const workID = trash.id;
+        fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
+          .then(() => {
+            // displayWorksModal();
+            displayWorksGallery();
+          })
+          .catch((error) => {
+            console.error("Erreur lors de la suppression du travail :", error);
+          });
+      });
+    });
   }
 }
+ prevImg();
 //Fonction qui génère les catégorie dynamiquement pour la modale (menue deroulante)
 async function displayCategoryModal() {
   const select = document.querySelector("#formAddWorks select");
@@ -269,24 +239,3 @@ function verifFormCompleted() {
   });
 }
 verifFormCompleted();
-
-function showFirstModal() {
-  // Fermer la deuxième fenêtre modale
-  modalAddWorks.style.display = "none";
-
-  // Afficher à nouveau la première fenêtre modale
-  modalPortfolio.style.display = "flex";
-  // Mettre à jour la galerie dans la première fenêtre modale
-  if (localStorage.getItem("token")) {
-    displayWorksGallery();
-  }
-}
-
-// Ajout d'un gestionnaire d'événements pour le bouton de soumission du formulaire d'ajout de photo
-formAddWorks.addEventListener("submit", (e) => {
-  e.preventDefault();
-  // Traitement pour ajouter la photo ici
-  addWorks();
-  // Affichage de la premiere fenetre modale
-  showFirstModal();
-});
