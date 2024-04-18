@@ -181,9 +181,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.querySelector(".admin-edit").style.display = "none";
     document.querySelector("#portfolio .div-edit span").style.display = "none";
     // Affichez les éléments liés à la session déconnectée
+    loginStatus.style.display = "block";
     logoutStatus.style.display = "none";
 
     // Redirigez l'utilisateur vers la page principale
     location.href = "index.html";
+  
   })
 });

@@ -63,19 +63,19 @@ function displayWorksGallery() {
   const token = localStorage.getItem("token");
 
   if (token) {
-   myGallery.innerHTML = "";
+    myGallery.innerHTML = "";
     getWorks().then((data) => {
-     data.forEach((work) => {
+      data.forEach((work) => {
         createGallery(work);
-     });
-   });
+      });
+    });
   } else {
-   console.log("Vous devez être connecté pour afficher la galerie.");
+    console.log("Vous devez être connecté pour afficher la galerie.");
   }
 }
- function addWorks() {
+function addWorks() {
   formAddWorks.addEventListener("submit", (e) => {
-    //  e.preventDefault();
+    e.preventDefault();
     console.log("formulaire soumis");
     // Récupération des Valeurs du Formulaire
     const formData = new FormData(formAddWorks);
@@ -102,28 +102,33 @@ function displayWorksGallery() {
         }
         // REINITIALISATION DES CHAMPS DU FORMULAIRE
         formAddWorks.reset();
-         modalAddWorks.style.display = "none";
+        modalAddWorks.style.display = "none";
         previewImage.style.display = "none";
+        labelFile.style.display = "block";
+        paragraphFile.style.display = "block";
+        displayWorksModal();
+        console.log("oeuvre ajoutée avec");
       })
-      console.log("oeuvre ajoutée avec")
-      .catch((error) => {
-        console.error("Erreur :", error);
-      });
+      // console.log("oeuvre ajoutée avec")
+    .catch((error) => {
+      console.error("Erreur :", error);
+    });
   });
 }
 
 addWorks();
 // FONCTION QUI REGROUPE LA FERMETURE DE LA FENETRE MODAL
-function closeModal(){
+function closeModal() {
   //Fermeture de la fenetre ùodale quand on clique en dehors
-  document.addEventListener("click",(e)=>{
-   if(e.target == modalContent){
-    modalContent.style.display ="none"
-   }
-  })
+  document.addEventListener("click", (e) => {
+    if (e.target == modalContent) {
+      modalContent.style.display = "none";
+    }
+  });
   //Fermuture de la modal quand on clique sur le croix 1
   const xmarkModal = document.querySelector(".modalPortfolio span .fa-xmark");
   xmarkModal.addEventListener("click", () => {
+    modalContent.style.display = "none";
     modalPortfolio.style.display = "none";
   });
   //Fermuture de la modal sur la croix 2
@@ -133,28 +138,28 @@ function closeModal(){
     inputFile.value = "";
     previewImage.style.display = "none";
     modalAddWorks.style.display = "none";
+    modalContent.style.display = "none";
   });
-  }
-  // closeModal()
-  //fonction d'affichage au click sur btn:"ajouter-photo" de la modalAddWorks
-  function displayModalAddWorks() {
-    buttonAddPhoto.addEventListener("click", () => {
-      modalPortfolio.style.display = "none";
-      modalAddWorks.style.display = "flex";
-    });
-  }
+}
+// closeModal()
+//fonction d'affichage au click sur btn:"ajouter-photo" de la modalAddWorks
+function displayModalAddWorks() {
+  buttonAddPhoto.addEventListener("click", () => {
+    modalPortfolio.style.display = "none";
+    modalAddWorks.style.display = "flex";
+  });
+}
 
-  const arrowLeft = document.querySelector(".fa-arrow-left");
-  console.log(arrowLeft);
-  arrowLeft.addEventListener("click", (e)=>{
-     //Supréssion de la prewiew a clik sur retour dans la modale
-     inputFile.value = "";
-     previewImage.style.display = "none";
-     console.log("coucou");
-     modalPortfolio.style.display = "flex";
-     modalAddWorks.style.display = "none";
-  })
-
+const arrowLeft = document.querySelector(".fa-arrow-left");
+console.log(arrowLeft);
+arrowLeft.addEventListener("click", (e) => {
+  //Supréssion de la prewiew a clik sur retour dans la modale
+  inputFile.value = "";
+  previewImage.style.display = "none";
+  console.log("coucou");
+  modalPortfolio.style.display = "flex";
+  modalAddWorks.style.display = "none";
+});
 
 const token = localStorage.getItem("token");
 //SUPPRESSION D'UNE IMAGE (WORK) PAR LA METHODE DELETE & TOKEN
@@ -179,7 +184,7 @@ function deleteWork() {
         const workID = trash.id;
         fetch(`http://localhost:5678/api/works/${workID}`, deleteWorkID)
           .then(() => {
-            // displayWorksModal();
+            displayWorksModal();
             displayWorksGallery();
           })
           .catch((error) => {
@@ -189,7 +194,7 @@ function deleteWork() {
     });
   }
 }
- prevImg();
+prevImg();
 //Fonction qui génère les catégorie dynamiquement pour la modale (menue deroulante)
 async function displayCategoryModal() {
   const select = document.querySelector("#formAddWorks select");
@@ -215,8 +220,8 @@ function prevImg() {
       reader.onload = function (e) {
         previewImage.src = e.target.result;
         previewImage.style.display = "block";
-         labelFile.style.display = "none";
-         paragraphFile.style.display = "none";
+        labelFile.style.display = "none";
+        paragraphFile.style.display = "none";
       };
       reader.readAsDataURL(file);
     } else {
